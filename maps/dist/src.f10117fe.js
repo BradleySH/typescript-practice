@@ -136888,12 +136888,17 @@ var User =
 /** @class */
 function () {
   function User() {
+    this.color = "red";
     this.name = faker_1.default.name.firstName();
     this.location = {
       lat: parseFloat(faker_1.default.address.latitude()),
       lng: parseFloat(faker_1.default.address.longitude())
     };
   }
+
+  User.prototype.markerContent = function () {
+    return "Username: " + this.name;
+  };
 
   return User;
 }();
@@ -136919,6 +136924,7 @@ var Company =
 /** @class */
 function () {
   function Company() {
+    this.color = "blue";
     this.companyName = faker_1.default.company.companyName();
     this.catchPhrase = faker_1.default.company.catchPhrase();
     this.location = {
@@ -136927,11 +136933,58 @@ function () {
     };
   }
 
+  Company.prototype.markerContent = function () {
+    return "\n        <div>\n          <h1>Company Name: " + this.companyName + "</h1>\n          <h3>Catchphrase: " + this.catchPhrase + "</h3>\n        </div>    \n          ";
+  };
+
   return Company;
 }();
 
 exports.Company = Company;
-},{"faker":"node_modules/faker/index.js"}],"src/index.ts":[function(require,module,exports) {
+},{"faker":"node_modules/faker/index.js"}],"src/Map.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Map = void 0;
+
+var Map =
+/** @class */
+function () {
+  function Map(divId) {
+    this.googleMap = new google.maps.Map(document.getElementById(divId), {
+      zoom: 1,
+      center: {
+        lat: 0,
+        lng: 0
+      }
+    });
+  }
+
+  Map.prototype.addMarker = function (mappable) {
+    var _this = this;
+
+    var marker = new google.maps.Marker({
+      map: this.googleMap,
+      position: {
+        lat: mappable.location.lat,
+        lng: mappable.location.lng
+      }
+    });
+    marker.addListener("click", function () {
+      var infoWindow = new google.maps.InfoWindow({
+        content: mappable.markerContent()
+      });
+      infoWindow.open(_this.googleMap, marker);
+    });
+  };
+
+  return Map;
+}();
+
+exports.Map = Map;
+},{}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -136942,11 +136995,14 @@ var User_1 = require("./User");
 
 var Company_1 = require("./Company");
 
+var Map_1 = require("./Map");
+
 var user = new User_1.User();
-console.log(user);
 var company = new Company_1.Company();
-console.log(company);
-},{"./User":"src/User.ts","./Company":"src/Company.ts"}],"../../../.nvm/versions/node/v14.17.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var custonMap = new Map_1.Map("map");
+custonMap.addMarker(company);
+custonMap.addMarker(user);
+},{"./User":"src/User.ts","./Company":"src/Company.ts","./Map":"src/Map.ts"}],"../../../.nvm/versions/node/v14.17.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -136974,7 +137030,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59389" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63759" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
