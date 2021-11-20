@@ -6,6 +6,7 @@ public class ReturnStringArray {
 
     System.out.println("How many chores?");
     int num = scan.nextInt();
+    scan.nextLine();
     String[] chores = new String[num];
 
     for (int i = 0; i < chores.length; i++) {
